@@ -7,11 +7,11 @@
 // 3. EXTRA: try changing the type from i32 into String everywhere; does your program still compile? What changes are necessary?
 
 /// Merge two array slices (that have to be sorted) into a vector
-fn merge(a: &[i32], b: &[i32]) -> Vec<i32> {
+fn merge(a: &mut[i32], b: &mut[i32]) -> Vec<i32> {
     let mut dest = Vec::new();
 
-    let a_idx = 0;
-    let b_idx = 0;
+    let mut a_idx = 0;
+    let mut b_idx = 0;
 
     while a_idx < a.len() && b_idx < b.len() {
         if a[a_idx] <= b[b_idx] {
@@ -23,12 +23,16 @@ fn merge(a: &[i32], b: &[i32]) -> Vec<i32> {
         }
     }
 
-    for elem in a[a_idx..] {
-        dest.push(elem)
-    }
-    for elem in b[b_idx..] {
-        dest.push(elem)
-    }
+    // for elem in &mut a[a_idx..] {
+    //     dest.push(*elem)
+    // }
+    // for elem in &mut b[b_idx..] {
+    //     dest.push(*elem)
+    // }
+
+    dest.extend_from_slice(&a[a_idx..]);
+    dest.extend_from_slice(&b[b_idx..]);
+
 
     dest
 }
@@ -37,10 +41,16 @@ fn merge(a: &[i32], b: &[i32]) -> Vec<i32> {
 fn merge_sort(data: &[i32]) -> Vec<i32> {
     if data.len() > 1 {
         // implement this
-        todo!()
-    } else {
-        data.to_vec()
+        return data.to_vec();
     }
+    let mid = data.len() / 2;
+    let left = &data[0..mid];  
+    let right = &data[mid..]; 
+
+    let left_sorted = merge_sort(left);
+    let right_sorted = merge_sort(right);
+
+    merge(&left_sorted, &right_sorted)
 }
 
 /// Read a bunch of numbers from standard input into a Vec<i32>.
